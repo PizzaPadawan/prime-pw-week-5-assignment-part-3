@@ -2,6 +2,8 @@ console.log('***** Music Collection *****')
 
 const collection = []
 
+console.log("******** ADD TO COLLECTION ********")
+
 function addToCollection(title, artist, year, tracks){
     let record = 
     {title: title,
@@ -27,6 +29,35 @@ console.log(addToCollection("No Good For No One Now", "Owen", 2002))
 console.log(collection)
 
 //end addToCollection() test
+
+console.log("******** ADD TO COLLECTION - WITH TRACKS ********")
+console.log(addToCollection("Where You Want To Be", 
+"Taking Back Sunday", 
+2004, 
+[
+    {name: "Set Phasers To Stun",
+    duration: "3:03"},
+    {name:"Bonus Mosh Pt. II",
+    duration:"3:06"},
+    {name:"A Decade Under The Influence",
+    duration:"4:07"},
+    {name:"This Photograph Is Proof (I Know You Know)",
+    duration:"4:11"},
+    {name:"The Union",
+    duration:"2:50"},
+    {name:"New American Classic",
+    duration:"4:35"},
+    {name:"I Am Fred Astaire",
+    duration:"3:43"},
+    {name:"One-Eighty By Summer",
+    duration:"3:53"},
+    {name:"Number Five With A Bullet",
+    duration:"3:49"},
+    {name:"Little Devotional",
+    duration:"3:07"},
+    {name:"...Slowdance On The Inside",
+    duration:"4:26"},
+]))
 
 //adding track arrays
 
@@ -182,6 +213,7 @@ collection[5].tracks = [
 ]
 
 //end added tracks
+console.log("******** SHOW COLLECTION ********")
 
 function showCollection(array){
     console.log(array.length);
@@ -189,7 +221,7 @@ function showCollection(array){
         console.log(`${album.title} by ${album.artist}, published in ${album.yearPublished}`)
         //tracklist stretch goal
             for (let i = 0; i < album.tracks.length; i++)
-                console.log(`${i+1}. ${album.tracks[i].name}: ${album.tracks[i].duration}`)
+                console.log(`${i+1}. "${album.tracks[i].name}" : ${album.tracks[i].duration}`)
     }
 }
 
@@ -200,49 +232,94 @@ showCollection(collection);
 
 
 // findByArtist() function:
+console.log("******** FIND BY ARTIST ********")
+
 function findByArtist(artist){
+    
     let artistArray = []
 
     for (let i=0; i < collection.length; i++){
         if (collection[i].artist === artist){
         artistArray.push(collection[i])
         }
-    }  return showCollection(artistArray)
+    }
+    console.log(artistArray)
+    return showCollection(artistArray)
 }
 
 // findByArtist() test:
+console.log("valid Death Cab For Cutie find, expect 2 arrays")
 console.log(findByArtist("Death Cab For Cutie"))
+
+console.log("invalid Machine Gun Kelly find, expect empty array")
 console.log(findByArtist("Machine Gun Kelly"))
 
-//Disclaimer: MGK was not my test for "not in my collection" because I want his records and don't have them.
+//Disclaimer: MGK was my test for "not in my collection" NOT because I want his records and don't have them.
 //It's because his records would NEVER be in my collection. Thank you for coming to my TEDxTalk. 
 
-console.log("---- S T R E T C H  G O A L S ----")
+console.log("----****---- S T R E T C H  G O A L S ----****----")
 
 
 //search() function looking for results that specifically match BOTH a defined artist and year
+//STRETCHIN' THE STRETCH GOAL: search() function with trackName criteria function added
+
+console.log("******** SEARCH FUNCTION ********")
 
 function search(object){
 
     let searchArray = []
     
-    if (object === undefined || object.artist === undefined && object.year === undefined) {
+    if ((object === undefined) || (object.trackName === undefined) && (object.artist === undefined && object.year === undefined) ) {
     return collection;
     }
 
-    for (let i=0; i < collection.length; i++){
-        if (object.artist === collection[i].artist && object.year === collection[i].yearPublished){
-        searchArray.push(collection[i])
-        }
-    }
-    return searchArray;
+    if (object.trackName !== undefined){
+        for (let album of collection){
+            for (let i=0; i < album.tracks.length; i++){
+                if (object.trackName === album.tracks[i].name){
+                    searchArray.push(album.tracks[i])}}}
+        return searchArray}
+    else {
+        for (let i=0; i < collection.length; i++){
+            if (object.artist === collection[i].artist && object.year === collection[i].yearPublished){
+                searchArray.push(collection[i])
+                }
+            }
+        showCollection(searchArray)
+        return searchArray;
+}
 }
 
 //testing search()
-console.log(search({arist:'Ray Charles', year:1957}))
+console.log("******** FIRST SEARCH TEST (NO TRACKNAME) ********")
+console.log("example search (Ray Charles), expect empty array:")
+console.log(search({artist:'Ray Charles', year:1957}))
+
+console.log("valid 'Nas 1994' search, expect Nas - Illmatic array:")
 console.log(search({artist:'Nas', year: 1994}))
-console.log(search({artist: 'Death Cab For Cutie'}))
-console.log(search({year: 2012}))
+
+console.log("artist only search, expect empty array:") 
+console.log(search({artist: 'Taking Back Sunday'}))
+
+console.log("artist with wrong year, expect empty array:")
+console.log(search({artist: "Death Cab For Cutie", year: 2002}))
+
+console.log("year only, expect empty array:")
+console.log(search({year: 2000}))
+
+console.log("search not defined as object, expect collection:")
+console.log(search("The Notorious B.I.G."))
+
+console.log("empty object, expect collection:")
+console.log(search({}))
+
+console.log("empty search, expect collection:")
 console.log(search())
 
-//added tracks / remaining stretch goals seen above starting at line 
+//brb, crying about how hard that was to figure out
+//great, now you're making me do TRACKS. THANKS.
+
+console.log("******** SECOND SEARCH TEST (TRACKNAME) ********")
+console.log("valid search of trackName only, expect 'Nobody's Nothing' array:", search({trackName: "Nobody's Nothing"}))
+console.log("valid search including artist and year, expect 'My Black Dog / Cosmic Being' array:", search({artist: "Glocca Morra", trackName: "My Black Dog / Cosmic Being", year: 2012}))
+console.log("valid artist, no matching trackName, expect empty array:", search({artist: "Owen", trackName: "One of These Days"}))
